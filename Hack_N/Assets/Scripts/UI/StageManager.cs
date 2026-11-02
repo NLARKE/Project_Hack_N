@@ -7,8 +7,9 @@ public class StageManager : MonoBehaviour
     [Header("UI Reference")]
     [SerializeField] private StageUIManager uiManager;
 
-    [Header("Black Core Setup")]
+    [Header("Black Core & Warning Setup")]
     [SerializeField] private GameObject blackCoreObject; // Black Core Object ကို ချိတ်ရန်
+    [SerializeField] private BossWarningManager warningManager; // Warning Manager စခရစ်ကို ချိတ်ရန်
 
     [Header("Game States")]
     public bool isGameOver = false;
@@ -23,6 +24,7 @@ public class StageManager : MonoBehaviour
     // စုစုပေါင်း Turret အရေအတွက်နှင့် ဖျက်ဆီးပြီး Turret အရေအတွက်
     private int initialTurrets = 0;
     private int destroyedTurretsCount = 0;
+    private bool isStageOver = false;
 
     void Update()
     {
@@ -49,9 +51,10 @@ public class StageManager : MonoBehaviour
             blackCoreObject.SetActive(false);
         }
     }
+
     void Start()
     {
-        // ★ TurretEnemy စခရစ်အစား "Enemy" Tag ပါသော Object များကိုသာ တိကျစွာ ရေတွက်မည်
+        // TurretEnemy စခရစ်အစား "Enemy" Tag ပါသော Object များကိုသာ တိကျစွာ ရေတွက်မည်
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         totalTurrets = enemies.Length;
         initialTurrets = totalTurrets; // မူလအရေအတွက်ကို သိမ်းထားမည်
@@ -63,10 +66,15 @@ public class StageManager : MonoBehaviour
             blackCoreObject.SetActive(false);
         }
 
+        // Warning Manager ကို အလိုအလျောက် ရှာဖွေပေးရန် (Inspector မှာ မထည့်ထားခဲ့လျှင်)
+        if (warningManager == null)
+        {
+            warningManager = FindObjectOfType<BossWarningManager>();
+        }
+
         isTimerRunning = true;
         matchTimer = 0f;
     }
-    private bool isStageOver = false;
 
     // Turret တစ်ခု သေဆုံးတိုင်း TurretEnemy script မှ ဤ Method ကို လှမ်းခေါ်မည်
     public void OnTurretDestroyed()
@@ -76,24 +84,41 @@ public class StageManager : MonoBehaviour
         // တစ်ကြိမ်လျှင် ၁ ခုသာ တိကျစွာ လျော့မည်
         totalTurrets--;
         destroyedTurretsCount++; // ဖျက်ဆီးပြီး Turret အရေအတွက်ကို ၁ ခု တိုးမည်
-        Debug.Log( $"<color=orange>OnTurretDestroyed called! Remaining Turrets: {totalTurrets}</color>");
+        Debug.Log($"<color=orange>OnTurretDestroyed called! Remaining Turrets: {totalTurrets}</color>");
 
-        // Turrets တွေ အားလုံး (၂ ခုစလုံး) ကုန်မှသာ Black Core ပေါ်မည်
+        // Turrets တွေ အားလုံး ကုန်မှသာ Warning ပြပြီး Black Core ပေါ်မည်
         if (totalTurrets <= 0)
         {
             totalTurrets = 0;
             isStageOver = true;
+            TriggerWarningAndSpawnBoss();
+        }
+    }
+
+    private void TriggerWarningAndSpawnBoss()
+    {
+        // အကယ်၍ WarningManager ရှိနေလျှင် Warning ပြပြီးမှ Black Core ပေါ်လာစေရန် လုပ်ဆောင်မည်
+        if (warningManager != null)
+        {
+            Debug.Log("<color=yellow>All Turrets Destroyed! Triggering Warning...</color>");
+            warningManager.TriggerBossWarning(() => {
+                SpawnBlackCore();
+            });
+        }
+        else
+        {
+            // WarningManager မရှိသေးလျှင် ချက်ချင်း ပေါ်စေမည်
+            Debug.LogWarning("BossWarningManager is missing! Spawning BlackCore directly.");
             SpawnBlackCore();
         }
     }
 
     private void SpawnBlackCore()
     {
-        // ★ Turrets အရေအတွက် 0 သို့မဟုတ် အောက်ရောက်မှသာ၊ ပြီးတော့ Black Core ကို တစ်ကြိမ်သာ ပေါ်စေမည်
-        if (totalTurrets <= 0 && blackCoreObject != null && !blackCoreObject.activeSelf)
+        if (blackCoreObject != null && !blackCoreObject.activeSelf)
         {
             blackCoreObject.SetActive(true);
-            Debug.Log("<color=cyan>All Turrets Destroyed! Black Core has appeared!</color>");
+            Debug.Log("<color=cyan>Warning finished! Black Core has appeared!</color>");
         }
     }
 
@@ -116,9 +141,7 @@ public class StageManager : MonoBehaviour
         isTimerRunning = false; // အချိန်ရေတွက်ခြင်းကို ရပ်မည်
         Debug.Log("<color=green>STAGE WIN: Stage Cleared!</color>");
 
-        // ★ လက်ရှိ ကစားနေသော Scene အမည် (သို့မဟုတ် Stage အဆင့်) ကို မူတည်ပြီး UnlockedStage ကို တိုးမြှင့်မည်
         string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-
         int currentUnlocked = PlayerPrefs.GetInt("UnlockedStage", 1);
 
         if (currentSceneName == "Stage1" && currentUnlocked < 2)
@@ -128,7 +151,7 @@ public class StageManager : MonoBehaviour
         }
         else if (currentSceneName == "Stage2" && currentUnlocked < 3)
         {
-            PlayerPrefs.SetInt("UnlockedStage", 3); // Stage 2 ပြီးလျှင် Stage 3 ကို ဖွင့်မည်
+            PlayerPrefs.SetInt("UnlockedStage", 3);
             PlayerPrefs.Save();
         }
 
