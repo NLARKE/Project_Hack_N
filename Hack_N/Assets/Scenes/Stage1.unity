@@ -683,7 +683,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4104890045596886045, guid: 689fa5bf8af85104ea979d5261eebae2, type: 3}
       propertyPath: maxHealth
-      value: 100
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4104890045596886045, guid: 689fa5bf8af85104ea979d5261eebae2, type: 3}
       propertyPath: moveSpeed
@@ -767,7 +767,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7790064001631156443, guid: 689fa5bf8af85104ea979d5261eebae2, type: 3}
       propertyPath: maxShieldHealth
-      value: 100
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7790064001631156443, guid: 689fa5bf8af85104ea979d5261eebae2, type: 3}
       propertyPath: shieldHPBarObject
@@ -1265,7 +1265,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -3015,7 +3015,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -3153,7 +3153,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -3878,7 +3878,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -4192,7 +4192,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
