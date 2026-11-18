@@ -99,7 +99,7 @@ public class StageUIManager : MonoBehaviour
     public void OnMainMenuButton()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("StageSelect");   // "MainMenu" အစား
     }
 
     // ဂိမ်းကို ပိတ်ရန် (Quit Game)
